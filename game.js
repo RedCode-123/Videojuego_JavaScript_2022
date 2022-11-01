@@ -16,7 +16,12 @@ btnRight.addEventListener('click', moveRight)
 btnDown.addEventListener('click', moveDown)
 window.addEventListener('keydown', moveKeys)
 let canvasS;
+// let gameSize;
 let  playerPosition = {
+    x : undefined,
+    y : undefined,
+};
+let  giftPosition = {
     x : undefined,
     y : undefined,
 };
@@ -64,12 +69,29 @@ function startGame() {
                     playerPosition.y = gameSize * row;
                 }
             }
-                    game.fillText(emojis['PLAYER'], playerPosition.x,playerPosition.y)
+            if (colItem == 'I') {
+                giftPosition.x =  gameSize * col;
+                giftPosition.y = gameSize * row;
+                // console.log(giftPosition);
+            }
+            movePlayer();
         });
     });
 
 }
 
+function movePlayer() {
+    if (playerPosition.x) {
+        const endPoint = {
+            x: (playerPosition.x).toFixed(3) === (giftPosition.x).toFixed(3),
+            y: (playerPosition.y).toFixed(3) === (giftPosition.y).toFixed(3)
+        };
+        if (endPoint.x && endPoint.y) {
+            console.log('Llegamos al final');
+        }
+    }
+    game.fillText(emojis['PLAYER'], playerPosition.x,playerPosition.y)
+}
 function moveKeys(event) {
     const keys = {
         'ArrowUp': moveUp,
