@@ -17,11 +17,11 @@ btnDown.addEventListener('click', moveDown)
 window.addEventListener('keydown', moveKeys)
 let canvasS;
 // let gameSize;
-let  playerPosition = {
+const  playerPosition = {
     x : undefined,
     y : undefined,
 };
-let  giftPosition = {
+const  giftPosition = {
     x : undefined,
     y : undefined,
 };
@@ -64,32 +64,36 @@ function startGame() {
             let row = rowIndex +1
             game.fillText(emojis[colItem], gameSize * col, gameSize * row)
             if (!playerPosition.x && !playerPosition.y) {
-                if (colItem == 'O') {
+                if (colItem === 'O') {
                     playerPosition.x = gameSize * col;
                     playerPosition.y = gameSize * row;
                 }
+            } else {
+
+                if (colItem === 'I') {
+                    giftPosition.x =  gameSize * col;
+                    giftPosition.y = gameSize * row;
+                    if ((playerPosition.x).toFixed(2) === (giftPosition.x).toFixed(2) && (playerPosition.y).toFixed(2) === (giftPosition.y).toFixed(2)){
+                    console.log('Llegamos a la meta');
+                    }
+
+                }
+                if (colItem === 'X') {
+                    let bombsPosition = {
+                        x : gameSize * col,
+                        y : gameSize * row
+                    }
+                    if ((playerPosition.x).toFixed(2) === (bombsPosition.x).toFixed(2) && (playerPosition.y).toFixed(2) === (bombsPosition.y).toFixed(2)){
+                    console.log('colisión');
+                    }
+                }
             }
-            if (colItem == 'I') {
-                giftPosition.x =  gameSize * col;
-                giftPosition.y = gameSize * row;
-                // console.log(giftPosition);
-            }
-            movePlayer();
         });
     });
-
+    movePlayer();
 }
 
 function movePlayer() {
-    if (playerPosition.x) {
-        const endPoint = {
-            x: (playerPosition.x).toFixed(3) === (giftPosition.x).toFixed(3),
-            y: (playerPosition.y).toFixed(3) === (giftPosition.y).toFixed(3)
-        };
-        if (endPoint.x && endPoint.y) {
-            console.log('Llegamos al final');
-        }
-    }
     game.fillText(emojis['PLAYER'], playerPosition.x,playerPosition.y)
 }
 function moveKeys(event) {
