@@ -25,6 +25,10 @@ const  giftPosition = {
     x : undefined,
     y : undefined,
 };
+let level = 0;
+let levelWin = false;
+let collision = false;
+let lives = 3;
 /* 
 Esperamos a que todo el html cargue 
 para ejecutar el código de canvas
@@ -54,7 +58,11 @@ function startGame() {
     game.font = gameSize + 'px Verdana';
     game.textAlign = 'end';
     
-    let map = maps[0];
+    let map = maps[level];
+    if (!maps[level]) {
+        console.log('Se alcanzó el máximo de niveles');
+        return;
+    }
     let mapRows = map.trim().split('\n');
     let mapRowsCols = mapRows.map(row => row.trim().split(''));
     game.clearRect(0,0, canvasS, canvasS);
@@ -69,12 +77,12 @@ function startGame() {
                     playerPosition.y = gameSize * row;
                 }
             } else {
-
                 if (colItem === 'I') {
                     giftPosition.x =  gameSize * col;
                     giftPosition.y = gameSize * row;
                     if ((playerPosition.x).toFixed(2) === (giftPosition.x).toFixed(2) && (playerPosition.y).toFixed(2) === (giftPosition.y).toFixed(2)){
                     console.log('Llegamos a la meta');
+                    levelWin = true;
                     }
 
                 }
@@ -85,11 +93,30 @@ function startGame() {
                     }
                     if ((playerPosition.x).toFixed(2) === (bombsPosition.x).toFixed(2) && (playerPosition.y).toFixed(2) === (bombsPosition.y).toFixed(2)){
                     console.log('colisión');
+                    collision = true;
                     }
                 }
             }
         });
     });
+    if (levelWin === true) {
+        level += 1;
+        levelWin = false;
+        canvasSize();
+    }
+    if (collision === true) {
+        lives--;
+        if (lives === 0) {
+            console.log('Perdiste');
+            level = 0;
+            lives = 3;
+            console.log('level ' + level, 'lives ' + lives);
+        }
+        playerPosition.x = undefined;
+        playerPosition.y = undefined;
+        collision = false;
+        canvasSize();
+    }
     movePlayer();
 }
 
