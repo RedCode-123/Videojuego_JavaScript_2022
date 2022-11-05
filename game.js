@@ -9,6 +9,8 @@ const btnUp = document.querySelector('#up') ;
 const btnLeft = document.querySelector('#left') ;
 const btnRight = document.querySelector('#right') ;
 const btnDown = document.querySelector('#down') ;
+const htmlLives = document.querySelector('#lives');
+const htmlTime = document.querySelector('#time');
 
 btnUp.addEventListener('click', moveUp)
 btnLeft.addEventListener('click', moveLeft)
@@ -29,6 +31,8 @@ let level = 0;
 let levelWin = false;
 let collision = false;
 let lives = 3;
+let startTime;
+let timeInterval;
 /* 
 Esperamos a que todo el html cargue 
 para ejecutar el código de canvas
@@ -58,11 +62,23 @@ function startGame() {
     game.font = gameSize + 'px Verdana';
     game.textAlign = 'end';
     
+    showLives(lives);
+
+    if (!startTime) {
+        startTime = Date.now();
+        timeInterval = setInterval(()=> {
+            htmlTime.innerText = ((Date.now() - startTime)/1_000) + ' s';
+        },100);
+    }
+
     let map = maps[level];
+
     if (!maps[level]) {
         console.log('Se alcanzó el máximo de niveles');
+        clearInterval(timeInterval);
         return;
     }
+
     let mapRows = map.trim().split('\n');
     let mapRowsCols = mapRows.map(row => row.trim().split(''));
     game.clearRect(0,0, canvasS, canvasS);
@@ -100,6 +116,7 @@ function startGame() {
         });
     });
     if (levelWin === true) {
+        console.log('Pasaste de Nivel');
         level += 1;
         levelWin = false;
         canvasSize();
@@ -110,7 +127,7 @@ function startGame() {
             console.log('Perdiste');
             level = 0;
             lives = 3;
-            console.log('level ' + level, 'lives ' + lives);
+            startTime = undefined; 
         }
         playerPosition.x = undefined;
         playerPosition.y = undefined;
@@ -118,6 +135,10 @@ function startGame() {
         canvasSize();
     }
     movePlayer();
+}
+
+function showLives(n) {
+    htmlLives.innerText = emojis['HEART'].repeat(n);
 }
 
 function movePlayer() {
