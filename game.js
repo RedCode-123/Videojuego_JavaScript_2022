@@ -13,12 +13,17 @@ const htmlLives = document.querySelector('#lives');
 const htmlTime = document.querySelector('#time');
 const htmlRecord = document.querySelector('#record');
 const htmlResult = document.querySelector('#result');
+const btns = document.querySelector('.btns');
+const reloadGame = document.querySelector('#reload');
 
 btnUp.addEventListener('click', moveUp)
 btnLeft.addEventListener('click', moveLeft)
 btnRight.addEventListener('click', moveRight)
 btnDown.addEventListener('click', moveDown)
 window.addEventListener('keydown', moveKeys)
+reloadGame.addEventListener('click', ()=> {
+    location.reload()
+})
 let canvasS;
 // let gameSize;
 const  playerPosition = {
@@ -147,6 +152,9 @@ function endGame() {
         htmlResult.innerText = 'Lo siento no lograste superar el record actual.';
     }
     startTime = undefined;
+    btns.classList.toggle('hide');
+    reloadGame.classList.toggle('hide');
+
 }
 function itIsACollision() {
         lives--;
