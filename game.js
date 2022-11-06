@@ -11,6 +11,8 @@ const btnRight = document.querySelector('#right') ;
 const btnDown = document.querySelector('#down') ;
 const htmlLives = document.querySelector('#lives');
 const htmlTime = document.querySelector('#time');
+const htmlRecord = document.querySelector('#record');
+const htmlResult = document.querySelector('#result');
 
 btnUp.addEventListener('click', moveUp)
 btnLeft.addEventListener('click', moveLeft)
@@ -33,6 +35,8 @@ let collision = false;
 let lives = 3;
 let startTime;
 let timeInterval;
+let record;
+let localRecord = +(localStorage.getItem('localRecord'));
 /* 
 Esperamos a que todo el html cargue 
 para ejecutar el código de canvas
@@ -63,20 +67,20 @@ function startGame() {
     game.textAlign = 'end';
     
     showLives(lives);
+    if (localRecord) {
+        htmlRecord.innerText = localRecord;
+    }
+    let map = maps[level];
 
+    if (!maps[level]) {
+        endGame()
+        return;
+    }
     if (!startTime) {
         startTime = Date.now();
         timeInterval = setInterval(()=> {
             htmlTime.innerText = ((Date.now() - startTime)/1_000) + ' s';
         },100);
-    }
-
-    let map = maps[level];
-
-    if (!maps[level]) {
-        console.log('Se alcanzó el máximo de niveles');
-        clearInterval(timeInterval);
-        return;
     }
 
     let mapRows = map.trim().split('\n');
@@ -115,13 +119,31 @@ function startGame() {
             }
         });
     });
+
     if (levelWin === true) {
-        console.log('Pasaste de Nivel');
-        level += 1;
-        levelWin = false;
-        canvasSize();
+        passToTheNextLevel();
     }
     if (collision === true) {
+        itIsACollision();
+    }
+    movePlayer();
+}
+function endGame() {
+    console.log('Se alcanzó el máximo de niveles');
+    clearInterval(timeInterval);
+    record = (Date.now() - startTime)/1_000
+    if ( !localRecord ) {
+        localStorage.setItem('localRecord', record);
+        htmlResult.innerText = 'Es el primer record, ahora, intenta superarlo.';
+    } else if (record <= localRecord){
+        localStorage.setItem('localRecord', record);
+        htmlResult.innerText = `Felicidades tu record es de ${record} s.`;
+    }else if(record > localRecord){
+        htmlResult.innerText = 'Lo siento no lograste superar el record actual.';
+    }
+    startTime = undefined;
+}
+function itIsACollision() {
         lives--;
         if (lives === 0) {
             console.log('Perdiste');
@@ -133,8 +155,12 @@ function startGame() {
         playerPosition.y = undefined;
         collision = false;
         canvasSize();
-    }
-    movePlayer();
+}
+function passToTheNextLevel(){
+        console.log('Pasaste de Nivel');
+        level += 1;
+        levelWin = false;
+        canvasSize();
 }
 
 function showLives(n) {
