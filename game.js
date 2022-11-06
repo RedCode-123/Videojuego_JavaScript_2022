@@ -67,9 +67,11 @@ function startGame() {
     game.textAlign = 'end';
     
     showLives(lives);
+
     if (localRecord) {
         htmlRecord.innerText = localRecord;
     }
+
     let map = maps[level];
 
     if (!maps[level]) {
@@ -77,10 +79,7 @@ function startGame() {
         return;
     }
     if (!startTime) {
-        startTime = Date.now();
-        timeInterval = setInterval(()=> {
-            htmlTime.innerText = ((Date.now() - startTime)/1_000) + ' s';
-        },100);
+        runTimer();
     }
 
     let mapRows = map.trim().split('\n');
@@ -127,6 +126,12 @@ function startGame() {
         itIsACollision();
     }
     movePlayer();
+}
+function runTimer() {
+    startTime = Date.now();
+    timeInterval = setInterval(()=> {
+        htmlTime.innerText = ((Date.now() - startTime)/1_000) + ' s';
+    },100);
 }
 function endGame() {
     console.log('Se alcanzó el máximo de niveles');
