@@ -139,6 +139,7 @@ function runTimer() {
     },100);
 }
 function endGame() {
+    canvasMsg('Ganaste :)');
     console.log('Se alcanzó el máximo de niveles');
     clearInterval(timeInterval);
     record = (Date.now() - startTime)/1_000
@@ -158,8 +159,10 @@ function endGame() {
 }
 function itIsACollision() {
         lives--;
+        canvasMsg('Chocaste');
         if (lives === 0) {
             console.log('Perdiste');
+            canvasMsg('Perdiste :(');
             level = 0;
             lives = 3;
             startTime = undefined; 
@@ -167,7 +170,16 @@ function itIsACollision() {
         playerPosition.x = undefined;
         playerPosition.y = undefined;
         collision = false;
-        canvasSize();
+        setTimeout(()=>{
+            canvasSize()
+        },1000);
+}
+function canvasMsg(msj) {
+    game.fillStyle = 'purple';
+    game.fillRect(0, (canvasS/2.5), canvasS, 100);
+    game.fillStyle = 'yellow';
+    game.textAlign = 'center';
+    game.fillText(msj,(canvasS/2),(canvasS/2));
 }
 function passToTheNextLevel(){
         console.log('Pasaste de Nivel');
